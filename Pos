@@ -1,0 +1,9 @@
+(?=<ul\s+id="matchMe"\s+type="square"\s*>) # match start with <ul id="matchMe"...
+(?>                                        # atomic group / don't backtrack (faster)
+   <!-- .*? -->                 |          # match xml / html comment
+   <[^>]*/>                     |          # self closing tag
+   (?<opentag><(?!/)[^>]*[^/]>) |          # push opening xml tag
+   (?<-opentag></[^>]*[^/]>)    |          # pop closing xml tag
+   [^<>]*                                  # something between tags
+)*                                         # match as many xml tags as possible
+(?(opentag)(?!))                           # ensure no 'opentag' groups are on stack
